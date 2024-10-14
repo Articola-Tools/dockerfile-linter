@@ -3,8 +3,8 @@
 [![image size](https://ghcr-badge.egpl.dev/articola-tools/dockerfile-linter/size?color=dodgerblue)](https://ghcr-badge.egpl.dev/articola-tools/dockerfile-linter/size?color=dodgerblue)
 
 This repo contains Dockerfile with preconfigured [Dockerfile linter](https://github.com/hadolint/hadolint).
-This linter is used in Articola Tools organization's repositories to lint Dockerfile files like
-other linters.
+This linter is used in Articola Tools organization's repositories to lint
+Dockerfile files like other linters.
 
 ## Usage
 
