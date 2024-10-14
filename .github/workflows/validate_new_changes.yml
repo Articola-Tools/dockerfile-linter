@@ -111,3 +111,26 @@ jobs:
             - name: "Run YAML linter"
               run: "docker run --rm -v ${{ github.workspace }}:/linter_workdir/repo
                     ${{ env.REGISTRY }}/articola-tools/yaml-linter:latest"
+
+    validate-markdown-changes:
+        runs-on: "ubuntu-latest"
+        needs: "find-changed-files"
+        if: "${{ needs.find-changed-files.outputs.is_markdown_changed == 'true' }}"
+
+        # NOTE: validating Markdown changes takes around 1 minute.
+        # If this job takes more than 5 minutes, it means that something is wrong.
+        timeout-minutes: 5
+        steps:
+            - name: "Checkout ${{ github.event.repository.name }}"
+              uses: "actions/checkout@v4"
+
+            - name: "Login to Docker registry"
+              uses: "docker/login-action@v3"
+              with:
+                  registry: "${{ env.REGISTRY }}"
+                  username: "${{ github.actor }}"
+                  password: "${{ secrets.GITHUB_TOKEN }}"
+
+            - name: "Run Dockerfile linter"
+              run: "docker run --rm -v ${{ github.workspace }}:/linter_workdir/repo
+                    ${{ env.REGISTRY }}/articola-tools/markdown-linter:latest"
