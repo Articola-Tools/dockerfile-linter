@@ -71,6 +71,8 @@ jobs:
 
                   # NOTE: using another name to don't allow docker to download image from the internet in the next step.
                   tags: "local/dockerfile-linter-pr:latest"
+                  cache-from: "type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+                  cache-to: "type=inline"
 
             - name: "Run local Dockerfile linter"
               run: "docker run --rm -v ${{ github.workspace }}:/linter_workdir/repo local/dockerfile-linter-pr:latest"
