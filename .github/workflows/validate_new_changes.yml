@@ -74,7 +74,21 @@ jobs:
                   cache-from: "type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
                   cache-to: "type=inline"
 
-            - name: "Run local Dockerfile linter"
+            - name: "Test correctly setup Dockerfile"
+              run: "docker run --rm -v ${{ github.workspace }}/tests/correct_dockerfile:/linter_workdir/repo
+                    local/dockerfile-linter-pr:latest"
+
+            - name: "Test incorrectly setup Dockerfile"
+              run: "docker run --rm -v ${{ github.workspace }}/tests/incorrect_dockerfile:/linter_workdir/repo
+                    local/dockerfile-linter-pr:latest && { echo 'Incorrectly setup Dockerfile test must fail!' >&2; exit 1; }
+                    || exit 0"
+
+            # HACK: remove `tests` directory before linting repo directory because this is easier than implementing a proper
+            # way to ignore directories in ENTRYPOINT command.
+            - name: "Remove `tests` directory"
+              run: "rm -rf ${{ github.workspace }}/tests"
+
+            - name: "Lint repo directory"
               run: "docker run --rm -v ${{ github.workspace }}:/linter_workdir/repo local/dockerfile-linter-pr:latest"
 
             - name: "Run Trivy vulnerability scanner"
