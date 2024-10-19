@@ -64,13 +64,13 @@ jobs:
             - name: "Build Dockerfile linter Docker image"
               uses: "docker/build-push-action@v6"
               with:
+                  # NOTE: setup of `context` is needed to force builder to use the `.dockerignore` file.
+                  context: "."
                   push: false
                   load: true
 
                   # NOTE: using another name to don't allow docker to download image from the internet in the next step.
                   tags: "local/dockerfile-linter-pr:latest"
-                  cache-from: "type=registry,ref=${{ env.REGISTRY }}/articola-tools/dockerfile-linter:latest"
-                  cache-to: "type=inline"
 
             - name: "Run local Dockerfile linter"
               run: "docker run --rm -v ${{ github.workspace }}:/linter_workdir/repo local/dockerfile-linter-pr:latest"
