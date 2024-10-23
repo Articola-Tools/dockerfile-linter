@@ -91,19 +91,10 @@ jobs:
             - name: "Lint repo directory"
               run: "docker run --rm -v ${{ github.workspace }}:/linter_workdir/repo local/dockerfile-linter-pr:latest"
 
-            - name: "Run Trivy vulnerability scanner"
-              uses: "aquasecurity/trivy-action@0.28.0"
-              env:
-                  # NOTE: this is needed because sometimes GHCR hits the rate limit, and AWS will be used instead.
-                  TRIVY_DB_REPOSITORY: "ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db"
-              with:
-                  image-ref: "local/dockerfile-linter-pr:latest"
-                  format: "table"
-                  exit-code: "1"
-                  ignore-unfixed: true
-                  vuln-type: "os,library"
-                  severity: "CRITICAL,HIGH,MEDIUM,LOW"
-                  scanners: "vuln,secret,misconfig"
+            - name: "Run Dockerfile security scanner"
+              run: "docker run --rm --group-add $(getent group docker | cut -d: -f3)
+                    -v /var/run/docker.sock:/var/run/docker.sock
+                    ghcr.io/articola-tools/dockerfile-security-scanner local/yaml-linter-pr:latest"
 
     validate-yaml-changes:
         runs-on: "ubuntu-latest"
