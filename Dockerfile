@@ -1,10 +1,10 @@
-FROM alpine:3.20
+FROM alpine:3.21
 
 RUN mkdir /linter_workdir
 
 RUN addgroup -S lintergroup && adduser -S linteruser -G lintergroup && chown -R linteruser:lintergroup /linter_workdir
 
-RUN apk add --no-cache wget=1.24.5-r0 \
+RUN apk add --no-cache wget=1.25.0-r0 \
     && wget --progress=dot:mega -O /linter_workdir/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 \
     && chmod +x /linter_workdir/hadolint \
     && apk del wget
