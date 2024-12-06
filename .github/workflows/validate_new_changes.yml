@@ -100,7 +100,7 @@ jobs:
             - name: "Run Dockerfile security scanner"
               run: "docker run --rm --group-add $(getent group docker | cut -d: -f3)
                     -v /var/run/docker.sock:/var/run/docker.sock
-                    ghcr.io/articola-tools/dockerfile-security-scanner local/yaml-linter-pr:latest"
+                    ghcr.io/articola-tools/dockerfile-security-scanner local/dockerfile-linter-pr:latest"
 
     validate-yaml-changes:
         runs-on: "ubuntu-latest"
